@@ -1,50 +1,61 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const app = express();
-const mysql = require('mysql');
+const sqlite3 = require('sqlite3').verbose();
+const cors = require('cors');
+let ApplicationUserTable;
+let sql_instert;
 
 
-
-const db = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'mydb'
+const db = new sqlite3.Database('./portfolio.db', sqlite3.OPEN_READWRITE,(err) => {
+    if (err) return console.error(err.message);
 });
 
-app.use(cors({origin: true, credentials: true}));
+// sql = 'CREATE TABLE ApplicationUser(id INTEGER PRIMARY KEY,FirstName,LastName,Email,Password,PhoneNumber)';
+ApplicationUserTable = 'INSERT INTO ApplicationUser(FirstName,LastName,Email,Password,PhoneNumber) VALUES(?,?,?,?,?)';
+// sql_instert = "SELECT * FROM ApplicationUser";
+// db.all(sql_instert, (err, rows) => {
+//     console.log(rows);
+//     if (err) return console.error(err.message);
+// });
+// db.run(sql,["Stefan", "Hall", "stefhall.2704@gmail.com", "Password123", "8049304783"],(err) =>{
+//     if (err) return console.error(err.message);
+// });
+
+// app.use(cors());
 app.use(express.json());
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.get("/api/get", (req, res) => {
-    const sql_insert = "SELECT * FROM ApplicationUser";
+    const sql = "SELECT * FROM ApplicationUser";
 
-    db.query(sql_insert, (err, result)=> {
-        console.log("Hello");
-        console.log(result);
+    db.all(sql, (err, rows)=> {
+        console.log(rows);
+        if (err) return console.error(err.message);
     });
 });
 
 
 
-app.post("/api/project/create", (req, res) => {
+app.post("/api/user/create", (req, res) => {
 
-    const project_title = req.body.project_title;
-    const project_link = req.body.project_link;
-    const user_id = req.body.user_id;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const phone_number = req.body.phone_number;
 
-    const sql_insert = "INSERT INTO UserProject (ProjectName, URL, UserId) VALUES (?,?)"
+    const sql = "INSERT INTO ApplicationUser(FirstName,LastName,Email,Password,PhoneNumber) VALUES(?,?,?,?,?)"
 
-    db.query(sql_insert, [project_title, project_link, user_id], (err, result)=> {
-        console.log(result);
+    db.run(sql, [first_name, last_name, email, password, phone_number], (err, result)=> {
+        if (err) {
+            console.error(err.message);
+        }else {
+            console.log(result);
+        }
     });
 });
 
