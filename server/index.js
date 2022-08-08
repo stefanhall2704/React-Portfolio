@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 // const cors = require('cors');
 const app = express();
 const sqlite3 = require('sqlite3').verbose();
+const cors = require('cors');
 let ApplicationUserTable;
 let sql_instert;
 
@@ -24,6 +25,7 @@ ApplicationUserTable = 'INSERT INTO ApplicationUser(FirstName,LastName,Email,Pas
 
 // app.use(cors());
 app.use(express.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
