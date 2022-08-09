@@ -1,12 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import  Application  from './App';
+// import Project from './App';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
-    <App />
+    <Application />
 
 );
 
+// const project = ReactDOM.createRoot(document.getElementById('createProfile'));
+// project.render(
+
+//     <Project />
+
+// );
 
